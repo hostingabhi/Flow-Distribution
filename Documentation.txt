@@ -1,0 +1,51 @@
+### Documentation Explaining the Logic Behind the Algorithm and Its Design Considerations
+
+**Algorithm Design Documentation**
+
+#### 1. Overview
+The goal of the flow distribution algorithm is to fairly distribute users to astrologers while allowing top astrologers to receive more connections if desired. This is achieved through a combination of equal distribution and prioritized distribution based on the top astrologer status.
+
+#### 2. Data Structure
+- **Astrologer Model:**
+  - `name`: String
+  - `connections`: Number (default: 0)
+  - `isTopAstrologer`: Boolean (default: false)
+
+- **User Model:**
+  - `name`: String
+  - `connectedAstrologer`: Reference to Astrologer model
+
+#### 3. Algorithm Logic
+1. **Equal Distribution:**
+   - When a new user is to be connected, the algorithm retrieves all astrologers.
+   - If there are no top astrologers, it selects the astrologer with the fewest connections to ensure an even distribution.
+
+2. **Top Astrologer Priority:**
+   - If there are top astrologers, the algorithm prioritizes distributing users to these top astrologers.
+   - The top astrologer with the fewest connections is selected first.
+
+#### 4. Flow Distribution Steps
+1. **Fetch Astrologers:**
+   - Retrieve all astrologers from the database.
+   - Separate astrologers into top astrologers and regular astrologers.
+
+2. **Select Astrologer:**
+   - If there are top astrologers, select the one with the fewest connections.
+   - If no top astrologers are available, select from regular astrologers based on the fewest connections.
+
+3. **Assign User:**
+   - Create a new user and associate it with the selected astrologer.
+   - Increment the connection count of the selected astrologer.
+
+#### 5. API Endpoints
+- **POST /astrologers:** Create a new astrologer.
+- **PATCH /astrologers/:id/toggle-top:** Toggle the top astrologer status.
+- **POST /users/distribute:** Distribute a user to an astrologer.
+
+#### 6. Design Considerations
+- **Scalability:** The algorithm efficiently handles the daily flow of users and can be scaled horizontally by adding more instances of the service.
+- **Performance:** The selection of astrologers is optimized by keeping the retrieval and update operations minimal.
+- **Flexibility:** The design allows for easy adjustments in the prioritization logic if business requirements change.
+- **Security:** Implement proper authentication and authorization to ensure only authorized personnel can toggle top astrologer status or create new astrologers.
+
+This detailed documentation explains the algorithm and its design considerations, ensuring that developers can understand the implementation and extend or modify it as needed.
